@@ -8,35 +8,73 @@
 	import '../app.postcss';
 
 	import { AppShell, AppRail, AppRailTile } from '@skeletonlabs/skeleton';
-	import { writable } from 'svelte/store';
 	import Icon from '@iconify/svelte';
-	let storeValue = writable(0);
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	const menu = {
+		rount: [
+			{
+				label: 'Appointment',
+				href: '/appointment',
+				icon: 'mdi:calendar-clock'
+			},
+			{
+				label: 'Pets',
+				href: '/pets',
+				icon: 'mdi:paw'
+			},
+			{
+				label: 'Forum',
+				href: '/forum',
+				icon: 'material-symbols:forum'
+			}
+		],
+		tail: [
+			{
+				label: 'Account',
+				href: '/profile',
+				icon: 'mdi:account'
+			}
+		]
+	};
 </script>
 
 <AppShell>
 	<svelte:fragment slot="sidebarLeft">
-		<AppRail selected={storeValue}>
-			<AppRailTile label="Home" value={0}>
-				<div class="text-3xl">
-					<Icon icon="mdi:home" />
-				</div>
-			</AppRailTile>
-			<AppRailTile label="Appointment" value={1}>
-				<div class="text-3xl">
-					<Icon icon="mdi:calendar-clock" />
-				</div>
-			</AppRailTile>
-			<AppRailTile label="Pets" value={2}>
-				<div class="text-3xl">
-					<Icon icon="mdi:paw" />
-				</div>
-			</AppRailTile>
-			<AppRailTile label="News" value={3}>
-				<div class="text-3xl">
-					<Icon icon="mdi:newspaper-variant-multiple" />
-				</div>
-			</AppRailTile>
-		</AppRail></svelte:fragment
-	>
+		<AppRail>
+			{#each menu.rount as item}
+				<AppRailTile
+					label={item.label}
+					tag="a"
+					class={item.href === $page.url.pathname  ? '!bg-primary-500' : ''}
+					value={item.label}
+					on:click={() => {
+						goto(item.href);
+					}}
+				>
+					<div class="text-3xl">
+						<Icon icon={item.icon} />
+					</div>
+				</AppRailTile>
+			{/each}
+			<svelte:fragment slot="trail">
+				{#each menu.tail as item}
+					<AppRailTile
+						label={item.label}
+						tag="a"
+						class={item.href === $page.url.pathname  ? '!bg-primary-500' : ''}
+						value={item.label}
+						on:click={() => {
+							goto(item.href);
+						}}
+					>
+						<div class="text-3xl">
+							<Icon icon={item.icon} />
+						</div>
+					</AppRailTile>
+				{/each}
+			</svelte:fragment>
+		</AppRail>
+	</svelte:fragment>
 	<slot />
 </AppShell>

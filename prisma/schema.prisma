@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String
+  role      String
+  password  String
+  createdAt DateTime  @default(now())
+  pet       Pet[]
+  forum     Forum[]
+  comment   Comment[]
+}
+
+model Pet {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String
+  dob       DateTime
+  breed     String
+  gender    String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  case      Case?
+}
+
+model Case {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  date        DateTime
+  time        String
+  notes       String
+  Pet         Pet?         @relation(fields: [petId], references: [id])
+  petId       Int?         @unique
+  appointment Appointment?
+  state       State[]
+  room        Room?
+}
+
+model Appointment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  date      DateTime
+  time      String
+  case      Case?    @relation(fields: [caseId], references: [id])
+  caseId    Int?     @unique
+}
+
+model State {
+  id        Int    @id @default(autoincrement())
+  name      String
+  stateCode String
+  case      Case?  @relation(fields: [caseId], references: [id])
+  caseId    Int?
+}
+
+model Room {
+  id     Int    @id @default(autoincrement())
+  name   String
+  case   Case?  @relation(fields: [caseId], references: [id])
+  caseId Int?   @unique
+}
+
+model Forum {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  title     String
+  content   String
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    Int?
+  comment   Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  content   String
+  forum     Forum?   @relation(fields: [forumId], references: [id])
+  forumId   Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+}

@@ -1,0 +1,100 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id Int [pk, increment]
+  email String [unique, not null]
+  name String [not null]
+  role String [not null]
+  password String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  pet Pet [not null]
+  forum Forum [not null]
+  comment Comment [not null]
+}
+
+Table Pet {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  name String [not null]
+  dob DateTime [not null]
+  breed String [not null]
+  gender String [not null]
+  user User
+  userId Int
+  case Case
+}
+
+Table Case {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  date DateTime [not null]
+  time String [not null]
+  notes String [not null]
+  Pet Pet
+  petId Int [unique]
+  appointment Appointment
+  state State [not null]
+  room Room
+}
+
+Table Appointment {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  date DateTime [not null]
+  time String [not null]
+  case Case
+  caseId Int [unique]
+}
+
+Table State {
+  id Int [pk, increment]
+  name String [not null]
+  stateCode String [not null]
+  case Case
+  caseId Int
+}
+
+Table Room {
+  id Int [pk, increment]
+  name String [not null]
+  case Case
+  caseId Int [unique]
+}
+
+Table Forum {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  title String [not null]
+  content String [not null]
+  user User
+  userId Int
+  comment Comment [not null]
+}
+
+Table Comment {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  content String [not null]
+  forum Forum
+  forumId Int
+  user User
+  userId Int
+}
+
+Ref: Pet.userId > User.id
+
+Ref: Case.petId - Pet.id
+
+Ref: Appointment.caseId - Case.id
+
+Ref: State.caseId > Case.id
+
+Ref: Room.caseId - Case.id
+
+Ref: Forum.userId > User.id
+
+Ref: Comment.forumId > Forum.id
+
+Ref: Comment.userId > User.id
