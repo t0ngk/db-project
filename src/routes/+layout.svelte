@@ -7,7 +7,8 @@
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
 
-	import { AppShell, AppRail, AppRailTile } from '@skeletonlabs/skeleton';
+	import { AppShell, AppRail, AppRailTile, Modal } from '@skeletonlabs/skeleton';
+
 	import Icon from '@iconify/svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -39,6 +40,8 @@
 	};
 </script>
 
+<Modal />
+
 <AppShell>
 	<svelte:fragment slot="sidebarLeft">
 		<AppRail>
@@ -46,7 +49,7 @@
 				<AppRailTile
 					label={item.label}
 					tag="a"
-					class={item.href === $page.url.pathname  ? '!bg-primary-500' : ''}
+					class={item.href === $page.url.pathname ? '!bg-primary-500' : ''}
 					value={item.label}
 					on:click={() => {
 						goto(item.href);
@@ -62,7 +65,7 @@
 					<AppRailTile
 						label={item.label}
 						tag="a"
-						class={item.href === $page.url.pathname  ? '!bg-primary-500' : ''}
+						class={item.href === $page.url.pathname ? '!bg-primary-500' : ''}
 						value={item.label}
 						on:click={() => {
 							goto(item.href);
