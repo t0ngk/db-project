@@ -1,9 +1,6 @@
 <script>
 	/** @type {import('./$types').PageData} */
 	export let data;
-
-	import { Avatar } from '@skeletonlabs/skeleton';
-
 	const forums = [
 		{
 			title: 'Blog Title',
@@ -42,7 +39,6 @@
 				</div>
 				<div class="card-footer flex flex-col gap-4">
 					<div class="flex gap-4 items-center">
-						<Avatar width="w-8" />
 						{forum.author}
 					</div>
 				</div>

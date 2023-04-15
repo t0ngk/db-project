@@ -4,21 +4,35 @@
 
 	import Icon from '@iconify/svelte';
 	import { modalStore } from '@skeletonlabs/skeleton';
-    import AddAppointment from '$lib/components/modal/AddAppointment.svelte';
+	import AddAppointment from '$lib/components/modal/AddAppointment.svelte';
+	import InfoAppointment from '$lib/components/modal/InfoAppointment.svelte';
 
 	const addAppointmentModal = {
-        type: 'component',
-        component: {
-            ref: AddAppointment,
-        }
+		type: 'component',
+		component: {
+			ref: AddAppointment
+		}
 	};
 
 	const openAddAppointmentModal = () => {
 		modalStore.trigger(addAppointmentModal);
 	};
 
+	const openInfoAppointmentModal = (appointment) => {
+		modalStore.trigger({
+			type: 'component',
+			component: {
+				ref: InfoAppointment,
+				props: {
+					appointment
+				}
+			}
+		});
+	};
+
 	const appointments = [
 		{
+			day: '12 Jan 2021',
 			time: '12:00 - 13:00',
 			name: 'Appointment Name',
 			room: 'Room 001',
@@ -26,6 +40,7 @@
 			status: 'Pending'
 		},
 		{
+			day: '12 Jan 2021',
 			time: '12:00 - 13:00',
 			name: 'Appointment Name',
 			room: 'Room 001',
@@ -33,6 +48,7 @@
 			status: 'Approved'
 		},
 		{
+			day: '12 Jan 2021',
 			time: '12:00 - 13:00',
 			name: 'Appointment Name',
 			room: 'Room 001',
@@ -40,6 +56,7 @@
 			status: 'Rejected'
 		},
 		{
+			day: '12 Jan 2021',
 			time: '12:00 - 13:00',
 			name: 'Appointment Name',
 			room: 'Room 001',
@@ -61,9 +78,12 @@
 	</div>
 	<div class="flex flex-wrap gap-4">
 		{#each appointments as appointment}
-			<div class="card card-hover cursor-pointer p-4 w-1/4">
+			<button on:click={() => {openInfoAppointmentModal(appointment)}} class="card card-hover cursor-pointer p-4 w-1/4 text-start">
 				<h2 class="flex gap-2 items-center">
-					<span><Icon icon="carbon:calendar" /></span>{appointment.time}
+					<span><Icon icon="mdi:calendar" /></span>{appointment.day}
+				</h2>
+				<h2 class="flex gap-2 items-center">
+					<span><Icon icon="mdi:clock" /></span>{appointment.time}
 				</h2>
 				<h3>{appointment.name}</h3>
 				<h3>At {appointment.room}</h3>
@@ -76,7 +96,7 @@
 				>
 					{appointment.status}
 				</div>
-			</div>
+			</button>
 		{/each}
 	</div>
 </div>
