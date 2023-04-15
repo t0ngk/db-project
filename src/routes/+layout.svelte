@@ -15,6 +15,11 @@
 
 	let fakeRole = 'Admin';
 
+	/** @type {import('./$types').PageData} */
+	export let data;
+
+	console.log(data);
+
 	const menu = {
 		rount: [
 			{
@@ -45,41 +50,11 @@
 
 <Modal />
 
-<AppShell>
-	<svelte:fragment slot="sidebarLeft">
-		<AppRail>
-			{#each menu.rount as item}
-				<AppRailTile
-					label={item.label}
-					tag="a"
-					class={item.href === $page.url.pathname ? '!bg-primary-500' : ''}
-					value={item.label}
-					on:click={() => {
-						goto(item.href);
-					}}
-				>
-					<div class="text-3xl">
-						<Icon icon={item.icon} />
-					</div>
-				</AppRailTile>
-			{/each}
-			{#if fakeRole === 'Admin'}
-				<AppRailTile
-					label="Admin"
-					tag="a"
-					class={'/admin' === $page.url.pathname ? '!bg-primary-500' : ''}
-					value="admin"
-					on:click={() => {
-						goto('/admin');
-					}}
-				>
-					<div class="text-3xl">
-						<Icon icon="mdi:account-box-multiple" />
-					</div>
-				</AppRailTile>
-			{/if}
-			<svelte:fragment slot="trail">
-				{#each menu.tail as item}
+{#if data.user}
+	<AppShell>
+		<svelte:fragment slot="sidebarLeft">
+			<AppRail>
+				{#each menu.rount as item}
 					<AppRailTile
 						label={item.label}
 						tag="a"
@@ -94,8 +69,44 @@
 						</div>
 					</AppRailTile>
 				{/each}
-			</svelte:fragment>
-		</AppRail>
-	</svelte:fragment>
-	<slot />
-</AppShell>
+				{#if fakeRole === 'Admin'}
+					<AppRailTile
+						label="Admin"
+						tag="a"
+						class={'/admin' === $page.url.pathname ? '!bg-primary-500' : ''}
+						value="admin"
+						on:click={() => {
+							goto('/admin');
+						}}
+					>
+						<div class="text-3xl">
+							<Icon icon="mdi:account-box-multiple" />
+						</div>
+					</AppRailTile>
+				{/if}
+				<svelte:fragment slot="trail">
+					{#each menu.tail as item}
+						<AppRailTile
+							label={item.label}
+							tag="a"
+							class={item.href === $page.url.pathname ? '!bg-primary-500' : ''}
+							value={item.label}
+							on:click={() => {
+								goto(item.href);
+							}}
+						>
+							<div class="text-3xl">
+								<Icon icon={item.icon} />
+							</div>
+						</AppRailTile>
+					{/each}
+				</svelte:fragment>
+			</AppRail>
+		</svelte:fragment>
+		<slot />
+	</AppShell>
+{:else}
+	<div class="overflow-y-scroll h-full">
+		<slot />
+	</div>
+{/if}
