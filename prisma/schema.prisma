@@ -48,7 +48,6 @@ model Case {
   petId       Int?         @unique
   appointment Appointment?
   state       State[]
-  room        Room?
 }
 
 model Appointment {
@@ -58,6 +57,7 @@ model Appointment {
   time      String
   case      Case?    @relation(fields: [caseId], references: [id])
   caseId    Int?     @unique
+  room      Room[]
 }
 
 model State {
@@ -69,10 +69,10 @@ model State {
 }
 
 model Room {
-  id     Int    @id @default(autoincrement())
-  name   String
-  case   Case?  @relation(fields: [caseId], references: [id])
-  caseId Int?   @unique
+  id            Int          @id @default(autoincrement())
+  name          String
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+  appointmentId Int?         @unique
 }
 
 model Forum {

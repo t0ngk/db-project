@@ -36,7 +36,6 @@ Table Case {
   petId Int [unique]
   appointment Appointment
   state State [not null]
-  room Room
 }
 
 Table Appointment {
@@ -46,6 +45,7 @@ Table Appointment {
   time String [not null]
   case Case
   caseId Int [unique]
+  room Room [not null]
 }
 
 Table State {
@@ -59,8 +59,8 @@ Table State {
 Table Room {
   id Int [pk, increment]
   name String [not null]
-  case Case
-  caseId Int [unique]
+  appointment Appointment
+  appointmentId Int [unique]
 }
 
 Table Forum {
@@ -91,7 +91,7 @@ Ref: Appointment.caseId - Case.id
 
 Ref: State.caseId > Case.id
 
-Ref: Room.caseId - Case.id
+Ref: Room.appointmentId > Appointment.id
 
 Ref: Forum.userId > User.id
 
