@@ -2,7 +2,7 @@
 	import { Stepper, Step, RadioGroup, RadioItem, focusTrap } from '@skeletonlabs/skeleton';
 	let value = 0;
 	let isFocused = true;
-
+  import autoAnimate from '@formkit/auto-animate';
   let information = {
     pet: '',
     service: '',
@@ -127,47 +127,49 @@
 				<RadioItem bind:group={value} name="justify" value={0}>เคยใช้</RadioItem>
 				<RadioItem bind:group={value} name="justify" value={1}>ไม่เคย</RadioItem>
 			</RadioGroup>
-			{#if value == 0}
-				<div>
-					<span>Pet Name : </span>
-					<select class="select" bind:value={information.pet}>
-						{#each pets as pet}
-							<option>{pet.name}</option>
-						{/each}
-					</select>
-				</div>
-			{:else}
-				<form>
-					<label class="label">
-						<span>Pet Name : </span>
-						<input class="input" type="text" placeholder="Pet Name" bind:value={information.pet}/>
-					</label>
-					<label class="label">
-						<span>Pet Type : </span>
-						<select class="select" bind:value={information.petType}>
-							<option>dog</option>
-							<option>cat</option>
-						</select>
-					</label>
-					<label class="label">
-						<span>Pet Type : </span>
-						<div class="flex">
-							<label class="flex items-center space-x-2">
-								<input class="radio" type="radio" checked name="radio-direct" value="1" />
-								<p>เพศผู้</p>
-							</label>
-							<label class="flex items-center space-x-2">
-								<input class="radio" type="radio" checked name="radio-direct" value="1" />
-								<p>เพศเมีย</p>
-							</label>
-						</div>
+      <div use:autoAnimate>
+        {#if value == 0}
+          <div>
+            <span>Pet Name : </span>
+            <select class="select" bind:value={information.pet}>
+              {#each pets as pet}
+                <option>{pet.name}</option>
+              {/each}
+            </select>
+          </div>
+        {:else}
+          <form>
             <label class="label">
-              <span>Phone number : </span>
-              <input class="input" type="number" placeholder="Phone number" bind:value={information.phoneNumber}/>
+              <span>Pet Name : </span>
+              <input class="input" type="text" placeholder="Pet Name" bind:value={information.pet}/>
             </label>
-					</label>
-				</form>
-			{/if}
+            <label class="label">
+              <span>Pet Type : </span>
+              <select class="select" bind:value={information.petType}>
+                <option>dog</option>
+                <option>cat</option>
+              </select>
+            </label>
+            <label class="label">
+              <span>Pet Type : </span>
+              <div class="flex gap-4">
+                <label class="flex items-center space-x-2">
+                  <input class="radio" type="radio" checked name="radio-direct" value="1" />
+                  <p>เพศผู้</p>
+                </label>
+                <label class="flex items-center space-x-2">
+                  <input class="radio" type="radio" checked name="radio-direct" value="1" />
+                  <p>เพศเมีย</p>
+                </label>
+              </div>
+              <label class="label">
+                <span>Phone number : </span>
+                <input class="input" type="number" placeholder="Phone number" bind:value={information.phoneNumber}/>
+              </label>
+            </label>
+          </form>
+        {/if}
+      </div>
 		</Step>
 		<Step>
 			<svelte:fragment slot="header">เลือกบริการและวันที่ต้องการนัด</svelte:fragment>
