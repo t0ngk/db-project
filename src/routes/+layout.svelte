@@ -12,6 +12,9 @@
 	import Icon from '@iconify/svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+
+	let fakeRole = 'Admin';
+
 	const menu = {
 		rount: [
 			{
@@ -60,6 +63,21 @@
 					</div>
 				</AppRailTile>
 			{/each}
+			{#if fakeRole === 'Admin'}
+				<AppRailTile
+					label="Admin"
+					tag="a"
+					class={'/admin' === $page.url.pathname ? '!bg-primary-500' : ''}
+					value="admin"
+					on:click={() => {
+						goto('/admin');
+					}}
+				>
+					<div class="text-3xl">
+						<Icon icon="mdi:account-box-multiple" />
+					</div>
+				</AppRailTile>
+			{/if}
 			<svelte:fragment slot="trail">
 				{#each menu.tail as item}
 					<AppRailTile
