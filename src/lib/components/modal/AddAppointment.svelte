@@ -200,6 +200,14 @@
 			</label>
       {#if information.service == 'ฝากเลี้ยง'}
       <label class="label flex flex-col">
+				<span>วันเริ่มฝากเลี้ยง : </span>
+				<input class="input" type="date">
+			</label>
+      <label class="label flex flex-col">
+				<span>ฝากเลี้ยงกี่วัน : </span>
+				<input class="input" type="number">
+			</label>
+      <label class="label flex flex-col">
 				<span>Select Room : </span>
 				<select class="select" bind:value={information.room}>
 					<option value="0">กรุณาเลือกห้อง</option>
