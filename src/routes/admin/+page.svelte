@@ -5,6 +5,7 @@
 	import { Table } from '@skeletonlabs/skeleton';
 	import { tableMapperValues } from '@skeletonlabs/skeleton';
 	import { modalStore } from '@skeletonlabs/skeleton';
+	import { goto } from '$app/navigation';
 	import AddTableRoom from '../../lib/components/modal/AddTableRoom.svelte';
 	import AddTableServices from '../../lib/components/modal/AddTableServices.svelte';
 
@@ -31,6 +32,25 @@
 
 	let tabSet = 0;
 	export let data;
+
+	const users = [
+		{
+			id: 1,
+			name: 'User 1'
+		},
+		{
+			id: 2,
+			name: 'User 2'
+		},
+		{
+			id: 3,
+			name: 'User 3'
+		},
+		{
+			id: 4,
+			name: 'User 4'
+		}
+	];
 
 	const simpleDataRoom = [
 		{
@@ -113,17 +133,24 @@
 				<button class="variant-filled-secondary">Submit</button>
 			</div>
 
-			<div class="mt-4 my-3">
-				<div class="card p-4 card-hover cursor-pointer shadow-xl w-full">
-					<h3>User name</h3>
-				</div>
+			<div class="p-4 flex flex-col gap-4">
+				{#each users as user}
+					<button on:click={() => {goto(`/admin/user/${user.id}`)}} class="card p-4 card-hover cursor-pointer shadow-xl w-full text-start">
+						<h3>User name</h3>
+					</button>
+				{/each}
 			</div>
 		{:else if tabSet === 1}
-			<button class="btn variant-filled-secondary float-right my-3"  on:click={openAddTableRoomModal}>Add Room</button>
+			<button class="btn variant-filled-secondary float-right my-3" on:click={openAddTableRoomModal}
+				>Add Room</button
+			>
 			<Table source={tableSimple} interactive={true} on:selected={mySelectionHandeler} />
 		{:else if tabSet === 2}
-			<button class="btn variant-filled-secondary float-right my-3" on:click={openAddTableServicesModal}>Add Room</button>
-			<Table source={tableSimpleService} interactive={true} on:selected={mySelectionHandeler}/>
+			<button
+				class="btn variant-filled-secondary float-right my-3"
+				on:click={openAddTableServicesModal}>Add Room</button
+			>
+			<Table source={tableSimpleService} interactive={true} on:selected={mySelectionHandeler} />
 		{/if}
 	</svelte:fragment>
 </TabGroup>
