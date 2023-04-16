@@ -7,6 +7,7 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import AddTableRoom from '../../lib/components/modal/AddTableRoom.svelte';
 	import AddTableServices from '../../lib/components/modal/AddTableServices.svelte';
+	import ShowdetailTableRoom from '../../lib/components/modal/ShowdetailTableRoom.svelte';
 
 	const addTableServicesModal = {
 		type: 'component',
@@ -30,7 +31,6 @@
 	};
 
 	let tabSet = 0;
-	export let data;
 
 	const simpleDataRoom = [
 		{
@@ -93,9 +93,32 @@
 		meta: tableMapperValues(simpleDataService, ['name', 'name', 'type'])
 	};
 
+	const ShowdetailTableRoomModal = {
+		type: 'component',
+		component: {
+			ref: ShowdetailTableRoom
+		}
+	};
+
+	const openShowdetailTableRoomModal = (daataa) => {
+		modalStore.trigger({
+			type: 'component',
+			component: {
+				ref: ShowdetailTableRoom,
+				props: {
+					daataa
+				}
+			}
+		});
+	};
+
 	const mySelectionHandeler = (daataa) => {
 		console.log(daataa);
+		openShowdetailTableRoomModal(daataa);
+
 	};
+
+
 </script>
 
 <TabGroup class="card p-4 mx-4 my-4">
