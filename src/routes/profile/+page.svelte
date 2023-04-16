@@ -5,6 +5,11 @@
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import { goto } from '$app/navigation';
 
+	const fakeLogout = () => {
+		localStorage.removeItem('auth');
+		window.location.assign('/login');
+	}
+
 	const forums = [
 		{
 			id: 1,
@@ -44,7 +49,7 @@
 				</div>
 			</div>
 			<div>
-				<button class="btn variant-filled-error">Log out</button>
+				<button on:click={fakeLogout} class="btn variant-filled-error">Log out</button>
 				<button on:click={() => {goto(`/profile/edit`)}} class="btn variant-filled-primary">Edit</button>
 			</div>
 		</div>

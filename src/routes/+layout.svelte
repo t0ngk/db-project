@@ -12,11 +12,18 @@
 	import Icon from '@iconify/svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 
 	let fakeRole = 'Admin';
 
 	/** @type {import('./$types').PageData} */
 	export let data;
+
+	let user = null;
+
+	onMount(() => {
+		user = localStorage.getItem('auth');
+	});
 
 	console.log(data);
 
@@ -50,7 +57,7 @@
 
 <Modal />
 
-{#if data.user}
+{#if user}
 	<AppShell>
 		<svelte:fragment slot="sidebarLeft">
 			<AppRail>
