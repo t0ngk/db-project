@@ -3,23 +3,28 @@
 	export let data;
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import AddForum from '$lib/components/modal/AddForum.svelte';
+	import { goto } from '$app/navigation';
 	const forums = [
 		{
+			id: 1,
 			title: 'Blog Title',
 			content: 'Blog Content',
 			author: 'Author Name'
 		},
 		{
+			id: 2,
 			title: 'Blog Title',
 			content: 'Blog Content',
 			author: 'Author Name'
 		},
 		{
+			id: 3,
 			title: 'Blog Title',
 			content: 'Blog Content',
 			author: 'Author Name'
 		},
 		{
+			id: 4,
 			title: 'Blog Title',
 			content: 'Blog Content',
 			author: 'Author Name'
@@ -50,8 +55,8 @@
 	</div>
 	<div class="flex flex-wrap gap-4">
 		{#each forums as forum}
-			<div class="card card-hover cursor-pointer shadow-xl w-full p-4 flex flex-col gap-4">
-				<div class="flex-1 flex justify-between">
+			<button on:click={() => {goto(`/forum/${forum.id}`)}} class="card card-hover cursor-pointer shadow-xl w-full p-4 flex flex-col gap-4">
+				<div class="flex-1 flex w-full justify-between">
 					<p>{forum.title}</p>
 					<p>Update 10 min ago</p>
 				</div>
@@ -60,7 +65,7 @@
 						{forum.author}
 					</div>
 				</div>
-			</div>
+			</button>
 		{/each}
 	</div>
 </div>
