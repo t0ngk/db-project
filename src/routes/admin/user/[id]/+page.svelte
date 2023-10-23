@@ -1,11 +1,19 @@
 <script>
 	let tabSet = 0;
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
-    import { modalStore } from '@skeletonlabs/skeleton';
-    import InfoAdminAppointment from '../../../../lib/components/modal/InfoAdminAppointment.svelte';
-	import AddAdminAppointment from '../../../../lib/components/modal/AddAdminAppointment.svelte';
-	import InfoAdminPet from '../../../../lib/components/modal/infoAdminPet.svelte';
-    
+	import { modalStore } from '@skeletonlabs/skeleton';
+	import Icon from '@iconify/svelte';
+	import InfoAppointment from '$lib/components/modal/InfoAppointment.svelte';
+	import AddAdminAppointment from '$lib/components/modal/AddAdminAppointment.svelte';
+	import InfoAdminPet from '$lib/components/modal/infoAdminPet.svelte';
+
+	/** @type {import('./$types').PageData} */
+	export let data;
+
+	console.log(data.thisUser)
+
+	let thisUser = data.thisUser;
+
 	const informationPetModal = {
 		type: 'component',
 		component: {
@@ -13,27 +21,82 @@
 		}
 	};
 
-	const openInformationPetModal = () => {
-		modalStore.trigger(informationPetModal);
-	};
-	
-	const informationAppointmentModal = {
-        type: 'component',
-        component: {
-            ref: InfoAdminAppointment
-        }
-    };
+	const appointments = data.appointments.map((rawdata) => {
+		return {
+			id: rawdata.Case?.Appointment?.Appointment_ID,
+			day: rawdata.Case?.Appointment?.Appointment_date,
+			time: rawdata.Case?.Appointment?.Appointment_time,
+			name: rawdata.Case?.Service?.Service_name,
+			pet: rawdata.Pet_name,
+			status: rawdata.Case?.Appointment?.Appointment_status,
+			room: rawdata.Case?.Appointment?.Room?.Room_name
+		};
+	});
 
-    const openInformationAppointmentModal = () => {
-        modalStore.trigger(informationAppointmentModal);
-    };
+	const openInformationPetModal = (pet) => {
+		modalStore.trigger({
+			type: 'component',
+			component: {
+				ref: InfoAdminPet,
+				props: {
+					pet,
+					user: data.user
+				}
+			}
+		});
+	};
+
+	const informationAppointmentModal = {
+		type: 'component',
+		component: {
+			ref: InfoAppointment
+		}
+	};
+
+	const openInformationAppointmentModal = (appointment) => {
+		modalStore.trigger({
+			type: 'component',
+			component: {
+				ref: InfoAppointment,
+				props: {
+					appointment,
+					user: data.user
+				}
+			}
+		});
+	};
 
 	const addAppointmentModal = {
 		type: 'component',
 		component: {
-			ref: AddAdminAppointment
+			ref: AddAdminAppointment,
+			props: {
+				pets: data.pets,
+				services: data.services,
+				rooms : data.rooms,
+				id: data.id
+			}
 		}
 	};
+
+	const updateUser = async () => {
+		const req = await fetch(`/api/user/${data.id}`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				...thisUser
+			})
+		});
+		const res = await req.json();
+		if (res.error) {
+			console.log(res.error);
+		} else {
+			console.log(res);
+			alert('Update Success');
+		}
+	}
 
 	const openAddAppointmentModal = () => {
 		modalStore.trigger(addAppointmentModal);
@@ -53,67 +116,84 @@
 				<div class="p-4 grid grid-cols-3 gap-4">
 					<label class="label">
 						<span>ชื่อ :</span>
-						<input class="input" type="text" disabled value="" />
-					</label>
-					<label class="label">
-						<span>นามสกุล :</span>
-						<input class="input" type="text" disabled value="" />
+						<input class="input" type="text" bind:value={thisUser.User_name} />
 					</label>
 					<label class="label">
 						<span>เบอร์โทรศัพท์ :</span>
-						<input class="input" type="tel" disabled value="" />
+						<input class="input" type="tel" bind:value={thisUser.User_tel} />
 					</label>
 					<label class="label">
 						<span>อีเมล :</span>
-						<input class="input" type="email" disabled value="" />
-					</label>
-					<label class="label">
-						<span>เพศ :</span>
-						<div class="flex gap-2">
-                            <div class="flex gap-3">
-                                <input class="radio" type="radio" checked name="radio-direct" value="1" disabled/>
-                                <p>ชาย</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <input class="radio" type="radio" name="radio-direct" value="2" disabled/>
-                                <p>หญิง</p>
-                            </div>
-						</div>
+						<input class="input" type="email" bind:value={thisUser.User_email} />
 					</label>
 					<label class="label">
 						<span>บทบาท :</span>
-						<select class="select">
+						<select bind:value={thisUser.User_role} class="select">
 							<option value="0">เลือกบทบาท</option>
-							<option value="1">แอดมิน</option>
-							<option value="2">พนักงาน</option>
+							<option value="Admin">แอดมิน</option>
+							<option value="User">พนักงาน</option>
 						</select>
 					</label>
-					<label class="label col-span-3">
+					<!-- <label class="label col-span-3">
 						<span>ที่อยู่ :</span>
 						<textarea class="textarea" rows="3" placeholder="ที่อยู่" disabled />
-					</label>
+					</label> -->
+					<br>
+					<br>
+					<button on:click={updateUser} class="btn variant-filled-primary w-full">Update</button>
 				</div>
 			{:else if tabSet === 1}
 				<div class="flex">
 					<h3>ข้อมูลการนัดหมาย</h3>
-					<button class="btn bg-primary-600 ml-auto" on:click={openAddAppointmentModal}>เพิ่มการนัดหมาย</button>
+					<button class="btn bg-primary-600 ml-auto" on:click={openAddAppointmentModal}
+						>เพิ่มการนัดหมาย</button
+					>
 				</div>
-                <hr class="my-3" />
-                <button on:click={openInformationAppointmentModal}>
-                    <div class="my-3 card p-4 card-hover cursor-pointer shadow-xl w-full">
-                        <h3>Appointment name</h3>
-                    </div>
-                </button>
+				<hr class="my-3" />
+				<div class="flex flex-wrap gap-4">
+					{#each appointments as appointment}
+						<button on:click={()=>{openInformationAppointmentModal(appointment)}}>
+							<div class="my-3 card p-4 card-hover cursor-pointer shadow-xl w-full text-start">
+								<h2 class="flex gap-2 items-center">
+									<span><Icon icon="mdi:calendar" /></span>{
+										new Date(appointment.day).toLocaleDateString(
+											'en-GB',
+											{ day: 'numeric', month: 'short', year: 'numeric' }
+										)
+									}
+								</h2>
+								<h2 class="flex gap-2 items-center">
+									<span><Icon icon="mdi:clock" /></span>{appointment.time}
+								</h2>
+								<h3>{appointment.name}</h3>
+								<h3>At {appointment.room}</h3>
+								<h4>For {appointment.pet}</h4>
+								<div
+									class="badge"
+									class:variant-filled-success={appointment.status == 'Approved'}
+									class:variant-filled-warning={appointment.status == 'Pending'}
+									class:variant-filled-error={appointment.status == 'Rejected'}
+								>
+									{appointment.status}
+								</div>
+							</div>
+						</button>
+					{/each}
+				</div>
 			{:else if tabSet === 2}
 				<div class="flex">
 					<h3>ข้อมูลสัตว์เลี้ยง</h3>
 				</div>
 				<hr class="my-3" />
-				<button on:click={openInformationPetModal}>
-                    <div class="my-3 card p-4 card-hover cursor-pointer shadow-xl">
-                        <h3>Pet name</h3>
-                    </div>
-                </button>
+				<div class="flex gap-4 flex-wrap">
+					{#each data.pets as pet}					
+						<button on:click={()=>{openInformationPetModal(pet)}}>
+							<div class="my-3 card p-4 card-hover cursor-pointer shadow-xl">
+								<h3>{pet.Pet_name}</h3>
+							</div>
+						</button>
+					{/each}
+				</div>
 			{/if}
 		</svelte:fragment>
 	</TabGroup>

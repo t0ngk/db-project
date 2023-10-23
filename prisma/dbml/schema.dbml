@@ -3,118 +3,131 @@
 //// ------------------------------------------------------
 
 Table User {
-  id Int [pk, increment]
-  email String [unique, not null]
-  name String [not null]
-  role String [not null]
-  password String [not null]
-  pet Pet [not null]
-  forum Forum [not null]
+  User_ID Int [pk, increment]
+  User_name String [not null]
+  User_email String [not null]
+  User_password String [not null]
+  User_tel String
+  User_role String [not null]
+  Pet Pet [not null]
   comment Comment [not null]
+  Forum Forum [not null]
 }
 
 Table Pet {
-  id Int [pk, increment]
-  createdAt DateTime [default: `now()`, not null]
-  name String [not null]
-  dob DateTime [not null]
-  breed String [not null]
-  gender String [not null]
-  user User
-  userId Int
-  case Case
-}
-
-Table Case {
-  id Int [pk, increment]
-  date DateTime [not null]
-  time String [not null]
-  notes String [not null]
-  Pet Pet
-  petId Int [unique]
-  appointment Appointment
-  state State
-  Service Service
-  serviceId Int
+  Pet_ID Int [pk, increment]
+  Pet_name String [not null]
+  Pet_DOB DateTime
+  Pet_type String [not null]
+  Pet_species String [not null]
+  Pet_gender String [not null]
+  Pet_description String
+  User User [not null]
+  User_ID Int [not null]
+  Case Case
 }
 
 Table Appointment {
-  id Int [pk, increment]
-  date DateTime [not null]
-  time String [not null]
-  case Case
-  caseId Int [unique]
-  room Room [not null]
-}
-
-Table State {
-  id Int [pk, increment]
-  name String [not null]
-  stateCode String [not null]
-  case Case
-  caseId Int [unique]
-  Recuperate Recuperate
+  Appointment_ID Int [pk, increment]
+  Appointment_date DateTime [not null]
+  Appointment_time String [not null]
+  Appointment_status Appointment_status
+  Case_ID Int [unique, not null]
+  Case Case [not null]
+  Room_ID Int
+  Room Room
 }
 
 Table Room {
-  id Int [pk, increment]
-  name String [not null]
-  appointment Appointment
-  appointmentId Int [unique]
+  Room_ID Int [pk, increment]
+  Room_name String [not null]
+  Room_type String [not null]
+  Appointment Appointment [not null]
+}
+
+Table Case {
+  Case_ID Int [pk, increment]
+  Pet_ID Int [unique, not null]
+  Pet Pet [not null]
+  State_ID Int [unique, not null]
+  State State [not null]
+  Service_ID Int [not null]
+  Service Service [not null]
+  Appointment Appointment
+}
+
+Table State {
+  State_ID Int [pk, increment]
+  State_detail String [not null]
+  Case Case
+  Recuperate Recuperate
 }
 
 Table Forum {
-  id Int [pk, increment]
-  createdAt DateTime [default: `now()`, not null]
-  title String [not null]
-  content String [not null]
-  user User
-  userId Int
-  comment Comment [not null]
+  Forum_ID Int [pk, increment]
+  Forum_title String [not null]
+  Forum_content String [not null]
+  Forum_created DateTime [not null]
+  User_ID Int [not null]
+  User User [not null]
+  Comment Comment [not null]
 }
 
 Table Comment {
-  id Int [pk, increment]
-  createdAt DateTime [default: `now()`, not null]
-  content String [not null]
-  forum Forum
-  forumId Int
-  user User
-  userId Int
-}
-
-Table Service {
-  id Int [pk, increment]
-  createdAt DateTime [default: `now()`, not null]
-  name String [not null]
-  price Float [not null]
-  case Case [not null]
+  Comment_ID Int [pk, increment]
+  Comment_detail String [not null]
+  Comment_created DateTime [not null]
+  User User
+  User_ID Int
+  Forum Forum
+  Forum_ID Int
 }
 
 Table Recuperate {
-  id Int [pk, increment]
-  startDate DateTime [not null]
-  endDate DateTime [not null]
-  state State
-  stateId Int [unique]
+  Recuperation_ID Int [pk, increment]
+  Start_date DateTime [not null]
+  End_date DateTime
+  State_ID Int [unique, not null]
+  State State [not null]
 }
 
-Ref: Pet.userId > User.id
+Table Service {
+  Service_ID Int [pk, increment]
+  Service_name String [not null]
+  Service_type Service_type [not null]
+  Service_recuperate Boolean [not null, default: false]
+  Case Case [not null]
+}
 
-Ref: Case.petId - Pet.id
+Enum Service_type {
+  Grooming
+  Boarding
+  Training
+  Others
+}
 
-Ref: Case.serviceId > Service.id
+Enum Appointment_status {
+  Pending
+  Approved
+  Rejected
+}
 
-Ref: Appointment.caseId - Case.id
+Ref: Pet.User_ID > User.User_ID
 
-Ref: State.caseId - Case.id
+Ref: Appointment.Case_ID - Case.Case_ID
 
-Ref: Room.appointmentId > Appointment.id
+Ref: Appointment.Room_ID > Room.Room_ID
 
-Ref: Forum.userId > User.id
+Ref: Case.Pet_ID - Pet.Pet_ID
 
-Ref: Comment.forumId > Forum.id
+Ref: Case.State_ID - State.State_ID
 
-Ref: Comment.userId > User.id
+Ref: Case.Service_ID > Service.Service_ID
 
-Ref: Recuperate.stateId - State.id
+Ref: Forum.User_ID > User.User_ID
+
+Ref: Comment.User_ID > User.User_ID
+
+Ref: Comment.Forum_ID > Forum.Forum_ID
+
+Ref: Recuperate.State_ID - State.State_ID

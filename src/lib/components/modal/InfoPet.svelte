@@ -2,6 +2,7 @@
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	export let pet;
 	let tabSet = 0;
+	console.log(pet);
 </script>
 
 <div class="p-4 flex flex-col gap-4 card">
@@ -15,24 +16,24 @@
 					<div class="flex flex-col gap-y-5">
 						<label class="label">
 							<span>ชื่อ : </span>
-							<input class="input" type="text" value={pet.name} disabled />
+							<input class="input" type="text" value={pet.Pet_name} disabled />
 						</label>
 						<label class="label">
 							<span>สายพันธ์ุ : </span>
-							<input class="input" type="text" value="สายพันธ์ุ" disabled />
+							<input class="input" type="text" value={pet.Pet_species} disabled />
 						</label>
 						<label class="label">
 							<span>เพศ : </span>
-							<input class="input" type="text" value="" disabled />
+							<input class="input" type="text" value={pet.Pet_gender} disabled />
 						</label>
 						<label>
 							<span>วันเกิด : </span>
-							<input class="input" type="date" value="" disabled />
+							<input class="input" type="text" value={new Date(pet.Pet_DOB)} disabled />
 						</label>
-						<label class="label">
+						<!-- <label class="label">
 							<span>รายละเอียดเพิ่มเติม : </span>
 							<textarea class="textarea" rows="4" placeholder="รายละเอียดเพิ่มเกี่ยวกัยสัตว์" disabled />
-						</label>
+						</label> -->
 					</div>
 				</section>
 			{:else if tabSet === 1}
@@ -40,24 +41,26 @@
 					<div class="flex flex-col gap-y-5">
 						<label class="label">
 							<span>สถานะการรักษา : </span>
-							<input class="input" type="text" value="สถานะการรักษา" disabled />
+							<input class="input" type="text" value={pet.Case?.State?.State_detail} disabled />
 						</label>
 						<label class="label">
 							<span>วันที่รักษา : </span>
-							<input class="input" type="text" value="วันที่รักษา" disabled />
+							<input class="input" type="text" value={pet.Case?.Appointment?.Appointment_date} disabled />
 						</label>
 						<label class="label">
 							<span>เวลาที่รักษา : </span>
-							<input class="input" type="text" value="เวลาที่รักษา" disabled />
+							<input class="input" type="text" value={pet.Case?.Appointment?.Appointment_time} disabled />
 						</label>
-						<label class="label">
-							<span>ห้อง : </span>
-							<input class="input" type="text" value="ห้อง" disabled />
-						</label>
-						<label class="label">
+						{#if pet.Case?.Appointment?.Room}							
+							<label class="label">
+								<span>ห้อง : </span>
+								<input class="input" type="text" value={pet.Case?.Appointment?.Room?.Room_name} disabled />
+							</label>
+						{/if}
+						<!-- <label class="label">
 							<span>รายละเอียดเพิ่มเติม : </span>
 							<textarea class="textarea" rows="4" placeholder="รายละเอียดเพิ่มเกี่ยวกัยสัตว์" disabled/>
-						</label>
+						</label> -->
 					</div>
 				</section>
 			{/if}

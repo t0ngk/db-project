@@ -15,98 +15,111 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
-  name     String
-  role     String
-  password String
-  pet      Pet[]
-  forum    Forum[]
-  comment  Comment[]
+  User_ID       Int       @id @default(autoincrement())
+  User_name     String
+  User_email    String
+  User_password String
+  User_tel      String?
+  User_role     String
+  Pet           Pet[]
+  comment       Comment[]
+  Forum         Forum[]
 }
 
 model Pet {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  name      String
-  dob       DateTime
-  breed     String
-  gender    String
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    Int?
-  case      Case?
-}
-
-model Case {
-  id          Int          @id @default(autoincrement())
-  date        DateTime
-  time        String
-  notes       String
-  Pet         Pet?         @relation(fields: [petId], references: [id])
-  petId       Int?         @unique
-  appointment Appointment?
-  state       State?
-  Service     Service?     @relation(fields: [serviceId], references: [id])
-  serviceId   Int?
+  Pet_ID          Int       @id @default(autoincrement())
+  Pet_name        String
+  Pet_DOB         DateTime?
+  Pet_type        String
+  Pet_species     String
+  Pet_gender      String
+  Pet_description String?
+  User            User      @relation(fields: [User_ID], references: [User_ID])
+  User_ID         Int
+  Case            Case?
 }
 
 model Appointment {
-  id     Int      @id @default(autoincrement())
-  date   DateTime
-  time   String
-  case   Case?    @relation(fields: [caseId], references: [id])
-  caseId Int?     @unique
-  room   Room[]
-}
-
-model State {
-  id         Int         @id @default(autoincrement())
-  name       String
-  stateCode  String
-  case       Case?       @relation(fields: [caseId], references: [id])
-  caseId     Int?        @unique
-  Recuperate Recuperate?
+  Appointment_ID     Int                 @id @default(autoincrement())
+  Appointment_date   DateTime
+  Appointment_time   String
+  Appointment_status Appointment_status?
+  Case_ID            Int                 @unique
+  Case               Case                @relation(fields: [Case_ID], references: [Case_ID])
+  Room_ID            Int?
+  Room               Room?                @relation(fields: [Room_ID], references: [Room_ID])
 }
 
 model Room {
-  id            Int          @id @default(autoincrement())
-  name          String
-  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
-  appointmentId Int?         @unique
+  Room_ID     Int           @id @default(autoincrement())
+  Room_name   String
+  Room_type   String
+  Appointment Appointment[]
+}
+
+model Case {
+  Case_ID     Int          @id @default(autoincrement())
+  Pet_ID      Int          @unique
+  Pet         Pet          @relation(fields: [Pet_ID], references: [Pet_ID])
+  State_ID    Int          @unique
+  State       State        @relation(fields: [State_ID], references: [State_ID])
+  Service_ID  Int
+  Service     Service      @relation(fields: [Service_ID], references: [Service_ID])
+  Appointment Appointment?
+}
+
+model State {
+  State_ID     Int         @id @default(autoincrement())
+  State_detail String
+  Case         Case?
+  Recuperate   Recuperate?
 }
 
 model Forum {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  title     String
-  content   String
-  user      User?     @relation(fields: [userId], references: [id])
-  userId    Int?
-  comment   Comment[]
+  Forum_ID      Int       @id @default(autoincrement())
+  Forum_title   String
+  Forum_content String
+  Forum_created DateTime
+  User_ID       Int
+  User          User      @relation(fields: [User_ID], references: [User_ID])
+  Comment       Comment[]
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  content   String
-  forum     Forum?   @relation(fields: [forumId], references: [id])
-  forumId   Int?
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    Int?
-}
-
-model Service {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  name      String
-  price     Float
-  case      Case[]
+  Comment_ID      Int      @id @default(autoincrement())
+  Comment_detail  String
+  Comment_created DateTime
+  User            User?    @relation(fields: [User_ID], references: [User_ID])
+  User_ID         Int?
+  Forum           Forum?   @relation(fields: [Forum_ID], references: [Forum_ID])
+  Forum_ID        Int?
 }
 
 model Recuperate {
-  id        Int      @id @default(autoincrement())
-  startDate DateTime
-  endDate   DateTime
-  state     State?   @relation(fields: [stateId], references: [id])
-  stateId   Int?     @unique
+  Recuperation_ID Int       @id @default(autoincrement())
+  Start_date      DateTime
+  End_date        DateTime?
+  State_ID        Int       @unique
+  State           State     @relation(fields: [State_ID], references: [State_ID])
+}
+
+model Service {
+  Service_ID         Int          @id @default(autoincrement())
+  Service_name       String
+  Service_type       Service_type
+  Service_recuperate Boolean      @default(false)
+  Case               Case[]
+}
+
+enum Service_type {
+  Grooming
+  Boarding
+  Training
+  Others
+}
+
+enum Appointment_status {
+  Pending
+  Approved
+  Rejected
 }

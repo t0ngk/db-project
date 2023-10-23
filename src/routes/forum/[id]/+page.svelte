@@ -1,38 +1,66 @@
-<script lang="ts">
+<script>
 	/** @type {import('./$types').PageData} */
 	export let data;
+    import moment from 'moment';
+    const forum = data.forum;
+
+    const addComment = async (e) => {
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        console.log(data);
+        console.log(forum)
+        const res = await fetch(`/api/forum/${forum.Forum_ID}/comment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const json = await res.json();
+
+        if (res.ok) {
+            alert('เพิ่มคอมเม้นสำเร็จ');
+            window.location.reload();
+        } else {
+            alert(json.message);
+        }
+    };
 </script>
 
 <div class="flex flex-col gap-4 p-4">
     <div class="w-full flex flex-col gap-4">
-        <h1>Forum name</h1>
-        <h5>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugiat sint aperiam, cumque alias reprehenderit voluptatum earum. Voluptas modi, officiis excepturi perferendis reiciendis fuga adipisci voluptate dolor impedit, nisi mollitia accusamus!</h5>
+        <h1>{forum.Forum_title}</h1>
+        <h5>{forum.Forum_content}</h5>
         <hr>
         <div class="flex justify-between w-full">
             <p>
-                Post by Username
+                Post by {forum.User.User_name}
             </p>
             <p>
-                Post at 10:00
+                Post at {moment(forum.Forum_created).fromNow()}
             </p>
         </div>
     </div>
-    <div class="card p-4 flex flex-col gap-4">
+    <form on:submit|preventDefault={addComment} class="card p-4 flex flex-col gap-4">
         <h4>Add Comment</h4>
-        <textarea class="textarea" rows="1"></textarea>
-        <button class="btn variant-filled-primary">Post</button>
-    </div>
-    <div class="card p-4 flex flex-col gap-4">
-        <h5>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita esse labore non. Magnam, amet illo? Ea velit ipsa eligendi repellendus, voluptas mollitia eaque veniam voluptate autem deleniti sit minima illo.</h5>
-        <hr>
-        <div class="flex justify-between w-full">
-            <p>
-                Post by Username
-            </p>
-            <p>
-                Post at 10:00
-            </p>
+        <textarea name="detail" class="textarea" rows="1"></textarea>
+        <button type="submit" class="btn variant-filled-primary">Post</button>
+    </form>
+    {#each forum.Comment as comment}    
+        <div class="card p-4 flex flex-col gap-4">
+            <h5>{comment.Comment_detail}</h5>
+            <hr>
+            <div class="flex justify-between w-full">
+                <p>
+                    Post by {comment.User.User_name}
+                </p>
+                <p>
+                    Post at {moment(comment.Comment_created).fromNow()}
+                </p>
+            </div>
         </div>
-    </div>
+    {/each}
 
 </div>

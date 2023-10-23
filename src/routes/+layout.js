@@ -1,8 +1,7 @@
 /** @type {import('./$types').LayoutLoad} */
-export function load() {
-    return {
-        user: {
-            name: 'world'
-        }
-    };
-  }
+export async function load({ fetch }) {
+	const user = await fetch('/api/auth').then((r) => r.json());
+	return {
+		user
+	};
+}

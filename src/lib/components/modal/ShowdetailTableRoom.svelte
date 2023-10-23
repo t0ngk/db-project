@@ -8,14 +8,14 @@
     <div class="flex flex-col gap-3">
         <label class="label">
             <span>id :</span>
-            <input class="input" type="text" bind:value={daataa.detail[0]} disabled/>
+            <input class="input" type="text" disabled bind:value={daataa.detail[0]}/>
         <label class="label">
             <span>Name :</span>
-            <input class="input" type="text" bind:value={daataa.detail[1]} disabled/>
+            <input class="input" type="text" bind:value={daataa.detail[1]}/>
         </label>
         <label class="label">
             <span>Type :</span>
-            <input class="input" type="text" bind:value={daataa.detail[2]} disabled/>
+            <input class="input" type="text" bind:value={daataa.detail[2]}/>
         </label>
     </div>
     <div class="flex justify-end mt-4 gap-3">

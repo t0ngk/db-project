@@ -9,6 +9,7 @@
 	import AddTableRoom from '../../lib/components/modal/AddTableRoom.svelte';
 	import AddTableServices from '../../lib/components/modal/AddTableServices.svelte';
 	import ShowdetailTableRoom from '../../lib/components/modal/ShowdetailTableRoom.svelte';
+	import ShowDetailTableService from '../../lib/components/modal/ShowDetailTableService.svelte';
 
 	const addTableServicesModal = {
 		type: 'component',
@@ -31,93 +32,26 @@
 		modalStore.trigger(addTableRoomModal);
 	};
 
+	/** @type {import('./$types').PageData} */
+	export let data;
+
 	let tabSet = 0;
 
-	const users = [
-		{
-			id: 1,
-			name: 'User 1'
-		},
-		{
-			id: 2,
-			name: 'User 2'
-		},
-		{
-			id: 3,
-			name: 'User 3'
-		},
-		{
-			id: 4,
-			name: 'User 4'
-		}
-	];
+	let users = data.user;
 
-	const simpleDataRoom = [
-		{
-			id: 1,
-			position: 1,
-			name: 'Room 1',
-			type: 'ตรวจสุขภาพ'
-		},
-		{
-			id: 2,
-			position: 2,
-			name: 'Room 2',
-			type: 'ตรวจสุขภาพ'
-		},
-		{
-			id: 3,
-			position: 3,
-			name: 'Room 3',
-			type: 'ตรวจสุขภาพ'
-		},
-		{
-			id: 4,
-			position: 4,
-			name: 'Room 4',
-			type: 'ตรวจสุขภาพ'
-		}
-	];
+	const simpleDataRoom = data.rooms;
 	const tableSimple = {
 		head: ['id', 'Name', 'Type'],
-		body: tableMapperValues(simpleDataRoom, ['id', 'name', 'type']),
-		meta: tableMapperValues(simpleDataRoom, ['position', 'name', 'type'])
+		body: tableMapperValues(simpleDataRoom, ['Room_ID', 'Room_name', 'Room_type']),
+		meta: tableMapperValues(simpleDataRoom, ['Room_ID', 'Room_name', 'Room_type'])
 	};
 
-	const simpleDataService = [
-		{
-			id: 1,
-			name: 'Service 1',
-			type: 'ตรวจสุขภาพ'
-		},
-		{
-			id: 2,
-			name: 'Service 2',
-			type: 'ตรวจสุขภาพ'
-		},
-		{
-			id: 3,
-			name: 'Service 3',
-			type: 'ตรวจสุขภาพ'
-		},
-		{
-			id: 4,
-			name: 'Service 4',
-			type: 'ตรวจสุขภาพ'
-		}
-	];
+	const simpleDataService = data.services;
 
 	const tableSimpleService = {
 		head: ['id', 'Name', 'Type'],
-		body: tableMapperValues(simpleDataService, ['id', 'name', 'type']),
-		meta: tableMapperValues(simpleDataService, ['name', 'name', 'type'])
-	};
-
-	const ShowdetailTableRoomModal = {
-		type: 'component',
-		component: {
-			ref: ShowdetailTableRoom
-		}
+		body: tableMapperValues(simpleDataService, ['Service_ID', 'Service_name', 'Service_type']),
+		meta: tableMapperValues(simpleDataService, ['Service_ID', 'Service_name', 'Service_type', 'Service_recuperate'])
 	};
 
 	const openShowdetailTableRoomModal = (daataa) => {
@@ -132,10 +66,20 @@
 		});
 	};
 
-	const mySelectionHandeler = (daataa) => {
-		console.log(daataa);
-		openShowdetailTableRoomModal(daataa);
+	const openShowdetailTableServicesModal = (daataa) => {
+		modalStore.trigger({
+			type: 'component',
+			component: {
+				ref: ShowDetailTableService,
+				props: {
+					daataa
+				}
+			}
+		});
+	};
 
+	const mySelectionHandeler = (daataa) => {
+		openShowdetailTableRoomModal(daataa);
 	};
 
 
@@ -158,8 +102,8 @@
 
 			<div class="p-4 flex flex-col gap-4">
 				{#each users as user}
-					<button on:click={() => {goto(`/admin/user/${user.id}`)}} class="card p-4 card-hover cursor-pointer shadow-xl w-full text-start">
-						<h3>User name</h3>
+					<button on:click={() => {goto(`/admin/user/${user.User_ID}`)}} class="card p-4 card-hover cursor-pointer shadow-xl w-full text-start">
+						<h3>{user.User_name}</h3>
 					</button>
 				{/each}
 			</div>
@@ -171,9 +115,9 @@
 		{:else if tabSet === 2}
 			<button
 				class="btn variant-filled-secondary float-right my-3"
-				on:click={openAddTableServicesModal}>Add Room</button
+				on:click={openAddTableServicesModal}>Add Service</button
 			>
-			<Table source={tableSimpleService} interactive={true} on:selected={mySelectionHandeler} />
+			<Table source={tableSimpleService} interactive={true} on:selected={openShowdetailTableServicesModal} />
 		{/if}
 	</svelte:fragment>
 </TabGroup>

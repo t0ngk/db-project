@@ -1,7 +1,36 @@
 <script>
 	export let appointment;
+	export let user;
 	console.log(appointment);
-	let fakeRole = 'Admin';
+	let fakeRole = user.User_role;
+
+	const approveAppointment = async () => {
+		const req = await fetch(`/api/appointment/${appointment.id}/state/Approved`, {
+			method: 'POST',
+		});
+
+		const res = await req.json();
+		if (req.ok) {
+			alert('อนุมัติการนัดหมายสำเร็จ');
+			window.location.reload();
+		} else {
+			alert(res.message);
+		}
+	}
+
+	const rejectAppointment = async () => {
+		const req = await fetch(`/api/appointment/${appointment.id}/state/Rejected`, {
+			method: 'POST',
+		});
+
+		const res = await req.json();
+		if (req.ok) {
+			alert('ปฏิเสธการนัดหมายสำเร็จ');
+			window.location.reload();
+		} else {
+			alert(res.message);
+		}
+	}
 </script>
 
 <div class="card p-4">
@@ -42,12 +71,10 @@
 
 	{#if appointment.status === 'Pending'}
 		{#if fakeRole === 'Admin'}
-			<button class="btn variant-filled-success">Approve</button>
-			<button class="btn variant-filled-error">Reject</button>
+			<button on:click={approveAppointment} class="btn variant-filled-success">Approve</button>
+			<button on:click={rejectAppointment} class="btn variant-filled-error">Reject</button>
 		{:else}
-			<button class="btn variant-filled-error">Cancel</button>
+			<button on:click={rejectAppointment} class="btn variant-filled-error">Cancel</button>
 		{/if}
-	{:else if appointment.status === 'Rejected'}
-		<button class="btn variant-filled-error">Delete</button>
 	{/if}
 </div>

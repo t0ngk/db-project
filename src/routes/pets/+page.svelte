@@ -34,9 +34,14 @@
 <div class="p-4 flex flex-col gap-4">
 	<h1>Pets</h1>
 	<div class="flex gap-4">
-		{#each fakeData as stillFakeData}
+		{#if data.pets.length == 0}
+		<div class="card p-4 w-full text-center">
+			<h2>No pet found</h2>
+		</div>
+		{/if}
+		{#each data.pets as stillFakeData}
 			<button on:click={() => {openModalPet(stillFakeData)}} class="card card-hover cursor-pointer p-4 w-1/4">
-				<h2>{stillFakeData.name}</h2>
+				<h2>{stillFakeData.Pet_name}</h2>
 			</button>
 		{/each}
 	</div>

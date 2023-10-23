@@ -12,21 +12,12 @@
 	import Icon from '@iconify/svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
-
-	let fakeRole = 'Admin';
-
+	import autoAnimate from '@formkit/auto-animate';
+	
 	/** @type {import('./$types').PageData} */
 	export let data;
-
-	let user = null;
-
-	onMount(() => {
-		user = localStorage.getItem('auth');
-	});
-
-	console.log(data);
-
+	
+	let fakeRole = data.user?.User_role;
 	const menu = {
 		rount: [
 			{
@@ -57,7 +48,7 @@
 
 <Modal />
 
-{#if user}
+{#if data.user}
 	<AppShell>
 		<svelte:fragment slot="sidebarLeft">
 			<AppRail>
@@ -110,7 +101,9 @@
 				</svelte:fragment>
 			</AppRail>
 		</svelte:fragment>
-		<slot />
+		<div use:autoAnimate>
+			<slot />
+		</div>
 	</AppShell>
 {:else}
 	<div class="overflow-y-scroll h-full">
